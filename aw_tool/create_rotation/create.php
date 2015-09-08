@@ -1,31 +1,26 @@
 <?php
 class Create
 {
-	public function execute()
+	public function execute($seed, $date)
 	{
-		mt_srand(123 + 20150903);
+		mt_srand($seed + $date);
 		$rotation_list = array();
 		$speech_pool = $this->getSpeechPool();
 
 		foreach(define::$staff as $num => $name){
-			$rotation_list['moderator'][] = $name;
+			mt_srand($seed + $date);
+
+			$rotation_list['moderator'][$date] = $name;
 			if(count($speech_pool) == 0){
 				$speech_pool = $this->getSpeechPool();
 			}
-
-			$moderator_key = array_search($num, $speech_pool);
-			if($moderator_key !== false){
-				unset($speech_pool[$moderator_key]);
-				$speech_pool = array_merge($speech_pool);
-			}
-
 			$speech_count = define::SPEECH_COUNT;
 
 			$next_moderator_key = false;
 			if(count($speech_pool) == define::SPEECH_COUNT * 2){
 				$next_moderator_key = array_search($num + 1, $speech_pool);
 				if($next_moderator_key !== false){
-					$rotation_list['speech'][$num][] = $speech_pool[$next_moderator_key];
+					$rotation_list['speech'][$date][] = $speech_pool[$next_moderator_key];
 					$speech_count--;
 					unset($speech_pool[$next_moderator_key]);
 					$speech_pool = array_merge($speech_pool);
@@ -35,19 +30,23 @@ class Create
 			for($i = 0; $i<$speech_count; $i++){
 				$rand_length = count($speech_pool) - 1;
 				$speech_num = mt_rand(0, $rand_length);
-				$rotation_list['speech'][$num][] = $speech_pool[$speech_num];
+				
+				if($speech_pool[$speech_num] == $num){
+					$i--;
+					continue;
+				}
+
+				$rotation_list['speech'][$date][] = $speech_pool[$speech_num];
 				unset($speech_pool[$speech_num]);
 				$speech_pool = array_merge($speech_pool);
 			}
 
-			if($moderator_key !== false){
-				$speech_pool[] = $num;
-				$speech_pool = array_merge($speech_pool);
-			}
 			if($next_moderator_key !== false){
 				$speech_pool[] = $num + 1;
 				$speech_pool = array_merge($speech_pool);
 			}
+
+			$date = date('Ymd', strtotime('+7 day', strtotime($date)));
 		}
 
 		$speech_name = array();

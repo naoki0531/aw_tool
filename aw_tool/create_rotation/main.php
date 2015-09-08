@@ -6,14 +6,15 @@ class Rotation
 	public function execute()
 	{
 		$seed = 123;
-		$create = new Create();
-		$rotation_list = $create->execute();
 		$date = 20150903;
+		$create = new Create();
+		$rotation_list = $create->execute($seed, $date);
+
 		echo '<table style="border: solid 1px;border-collapse: collapse;"><tablebody>';
 		echo '<tr>';
 		echo '<th style="border: solid 1px;border-collapse: collapse;">日付</th>';
 		foreach ($rotation_list['moderator'] as $key => $value) {
-			echo '<th style="border: solid 1px;border-collapse: collapse;" colspan="2">' . ($date + $key * 7) . '</th>';
+			echo '<th style="border: solid 1px;border-collapse: collapse;" colspan="2">' . date($key) . '</th>';
 		}
 		echo '</tr><tr>';
 		echo '<td style="border: solid 1px;border-collapse: collapse;">司会</td>';
