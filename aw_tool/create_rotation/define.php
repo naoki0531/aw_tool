@@ -15,4 +15,6 @@ class define
 		);
 
 	const SPEECH_COUNT = 2;
+
+	const BASE_DATE = 20150903;
 }
