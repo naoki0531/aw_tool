@@ -2,12 +2,22 @@
 require_once('aw_tool/create_rotation/create.php');
 require_once('aw_tool/create_rotation/define.php');
 
-$seed = isset($_GET['seed']) === true ? $_GET['seed'] : 123;
-$date = isset($_GET['date']) === true ? $_GET['date'] : 20150903;
-
 $tool = new Create();
-$base_date = $tool->getBaesDate($date);
+$result = $tool->validation();
 
+if($result['date'] === true){
+	$date = $_GET['date'];
+} else {
+	$date = define::BASE_DATE;
+}
+
+if($result['seed'] === true){
+	$seed = $_GET['seed'];
+} else {
+	$seed = define::BASE_SEED;
+}
+
+$base_date = $tool->getBaesDate($date);
 $rotation_list = $tool->execute($seed, $base_date);
 ?>
 

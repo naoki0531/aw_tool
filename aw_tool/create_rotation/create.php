@@ -1,6 +1,24 @@
 <?php
 class Create
 {
+	public function validation()
+	{
+		$result = array();
+		if(isset($_GET['seed']) === true && is_numeric($_GET['seed']) === true){
+			$result['seed'] = true;
+		} else {
+			$result['seed'] = false;
+		}
+
+		if(isset($_GET['date']) === true && $_GET['date'] === date('Ymd', strtotime($_GET['date']))){
+			$result['date'] = true;
+		} else {
+			$result['date'] = false;
+		}
+
+		return $result;
+	}
+
 	public function getBaesDate($date)
 	{
 		// 1順する開始日付と終了日付を取得
