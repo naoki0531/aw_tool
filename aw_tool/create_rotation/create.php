@@ -49,14 +49,13 @@ class Create
 			$rotation_list['moderator'][$date] = $name;
 
 			// スピーチ人数を設定
-			$speech_count = define::SPEECH_COUNT;
-			for($i = 0; $i<$speech_count; $i++){
+			for($i = 0; $i<define::SPEECH_COUNT; $i++){
 				// スピーチする人がいなくなったら再度格納する
 				if(count($speech_pool) == 0){
 					$speech_pool = $this->getSpeechPool();
 				}
 
-				// 表示終了の2回前、または司会の2倍の人数が格納できる最後の配列の時、次の司会者を優先的に格納する
+				// 表示終了の2回前、または司会の2倍の人数が格納できる最後の配列の時で次の司会者が残っていた場合は優先的に格納
 				$next_moderator_key = false;
 				if(count($speech_pool) == define::SPEECH_COUNT * 2){
 					$next_moderator_key = array_search($num + 1, $speech_pool);
@@ -78,22 +77,12 @@ class Create
 						}
 					}
 				}
-
-				$rotation_list['speech'][$date][] = $speech_pool[$speech_num];
+				$rotation_list['speech'][$date][] = define::$staff[$speech_pool[$speech_num]];
 				unset($speech_pool[$speech_num]);
 				$speech_pool = array_merge($speech_pool);
 			}
 			$date = date('Ymd', strtotime('+7 day', strtotime($date)));
 		}
-
-		$speech_name = array();
-		foreach ($rotation_list['speech'] as $key => $speech_list) {
-			foreach ($speech_list as $speech_num => $staff_num) {
-				$speech_name[$key][$speech_num] = define::$staff[$staff_num];
-			}
-		}
-		$rotation_list['speech'] = $speech_name;
-
 		return $rotation_list;
 	}
 
