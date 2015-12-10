@@ -48,5 +48,9 @@ function display($first, $second, $num){
 		$display_num = $display_num + $first_num + $second_num;
 		echo $display_num . PHP_EOL;
 		$kaibun_count++;
+
+		if($j==9 && $second - $first > 1){
+			display($first + 1, $second -1, $display_num);
+		}
 	}
 }
